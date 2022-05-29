@@ -186,5 +186,6 @@ with col2:
                             graph.edge("We don't have an obligation to do this", "Pro-choice policies")
                         if personal == "No":
                             graph.edge("We have an obligation to do this", "Pro-choice policies","LOGIC BREAK")
-    st.graphviz_chart(graph, use_container_width=False)
+                            
+    st.graphviz_chart(graph, use_container_width=True)
 
