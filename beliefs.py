@@ -179,5 +179,5 @@ if killing == "Yes":
                     if personal == "No":
                         graph.edge("We have an obligation to do this", "Pro-choice policies","LOGIC BREAK")
                             
-st.graphviz_chart(graph, use_container_width=True)
+st.graphviz_chart(graph, use_container_width=False)
 
