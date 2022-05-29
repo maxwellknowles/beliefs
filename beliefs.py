@@ -21,7 +21,7 @@ with col1:
         human_value_innate_why = st.selectbox("Why does a person have innate value?", ("Because they are unique, conscious beings", "Because they were created","Just because"))
     caring = st.selectbox("Do we have a moral responsibility to uphold the value of fellow humans?", ("Yes", "No"))
     lottery = st.selectbox("How much control did you have over where and when you were born?", ("No control", "I could influence my own birth"))
-    lottery2 = st.selectbox("Should people's life outcomes be constrained by their place of birth?", ("Yes", "No"))
+    lottery2 = st.selectbox("Should people's life outcomes be constrained by their place of birth?", ("No", "Yes"))
     if lottery2 == "No":
         action = st.selectbox("Does minimizing chance in life outcomes require some form of action or support from others?", ("Yes", "No"))
         if action == "Yes":
