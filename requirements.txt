@@ -1,11 +1,4 @@
 urllib3
 pandas
 streamlit
-numpy
-datetime
-streamlit_option_menu
-requests
-bs4
-google
-beautifulsoup4
-matplotlib
+graphviz
