@@ -21,14 +21,13 @@ lottery = st.selectbox("How much control did you have over where and when you we
 
 #policy implications of value
 lottery2 = st.selectbox("Should people's life outcomes be constrained by their place of birth?", ("No", "Yes"))
-if lottery2 == "No":
-    action = st.selectbox("Does minimizing chance in life outcomes require some form of action or support from others?", ("Yes", "No"))
-    if action == "Yes":
-        choice = st.selectbox("How much should helping to improve life outcomes be a personal choice versus a group choice?", ("Personal", "Group"))
-        if choice == "Personal":
-            personal = st.selectbox("Is it okay to make personal choices that don't improve the life outcomes of others?", ("No", "Yes"))
-        if choice == "Group":
-            group = st.selectbox("How does a group best determine how to make decisions?", ("Democracy", "Rule of those in power"))
+action = st.selectbox("Does minimizing chance in life outcomes require some form of action or support from others?", ("Yes", "No"))
+if action == "Yes":
+    choice = st.selectbox("How much should helping to improve life outcomes be a personal choice versus a group choice?", ("Personal", "Group"))
+    if choice == "Personal":
+        personal = st.selectbox("Is it okay to make personal choices that don't improve the life outcomes of others?", ("No", "Yes"))
+    if choice == "Group":
+        group = st.selectbox("How does a group best determine how to make decisions?", ("Democracy", "Rule of those in power"))
 killing = st.selectbox("Is killing a human wrong?", ("Yes", "No"))
 if killing == "Yes":
     killing_why = st.selectbox("What makes killing wrong? What makes death sad or a loss?", ("It eliminates the critically high potential of future life", "It eliminates a life that has experienced conscious thought, memories, relationships, etc", "Both"))
@@ -107,6 +106,25 @@ if caring == "Yes":
         if lottery2 == "Yes":
             graph.edge("We have a moral obligation to care for others", "We should try to limit the role of chance in limiting life outcomes")
             graph.edge("The family, money, education, religion, and politics we were raised with was not by our own choice", "Despite the lack of choice involved, this should determine life outcomes", "LOGIC BREAK")
+            if action == "Yes":
+                graph.edge("Despite the lack of choice involved, this should determine life outcomes", "We should try to limit the role of chance in limiting life outcomes", "LOGIC BREAK")
+                graph.edge("We should try to limit the role of chance in limiting life outcomes", "We will need to sacrifice money, time, or materials to improve society")
+                if choice == "Personal":
+                    graph.edge("We will need to sacrifice money, time, or materials to improve society", "Improving others' life outcomes should be done as a personal choice")
+                    if personal == "Yes":
+                        graph.edge("Improving others' life outcomes should be done as a personal choice", "We don't have an obligation to do this", "LOGIC BREAK")
+                    if personal == "No":
+                        graph.edge("Improving others' life outcomes should be done as a personal choice", "We have an obligation to do this")
+                if choice == "Group":
+                    graph.edge("We will need to sacrifice money, time, or materials to improve society", "Improving others' life outcomes should be done as a group")
+                    if group == "Democracy":
+                        graph.edge("Improving others' life outcomes should be done as a group", "The group should vote on this process")
+                        graph.edge("We are all equal", "The group should vote on this process")
+                    if group == "Rule of those in power":
+                        graph.edge("Improving others' life outcomes should be done as a group", "The group should be guided by those in power")
+                        graph.edge("We are all equal", "The group should be guided by those in power", "LOGIC BREAK")
+            if action == "No":
+                graph.edge("Despite the lack of choice involved, this should determine life outcomes", "We will not need to sacrifice money, time, or materials to improve society")
         if lottery2 == "No":
             graph.edge("We have a moral obligation to care for others", "We should try to limit the role of chance in limiting life outcomes")
             graph.edge("The family, money, education, religion, and politics we were raised with was not by our own choice", "We should try to limit the role of chance in limiting life outcomes")
