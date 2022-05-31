@@ -1,39 +1,132 @@
 ## Imports
 import streamlit as st
 import graphviz as graphviz
+import pandas as pd
+import numpy as np
+import altair as alt
 
 st.set_page_config(page_title="The Belief Flow", page_icon=":heart:", layout="wide",initial_sidebar_state="expanded")
+
 st.header("Belief Flow")
 # Create a graphlib graph object
 graph = graphviz.Digraph()
 
+#belief breakdown
+communitarianism = 0
+foundation = 0
+
 #questions of origins
 universe = st.selectbox('Does the universe have a beginning?',('Yes', 'No'))
+if universe == "Yes":
+    foundation += 1
 multiverse = st.selectbox('Do you believe there are multiple universes or the death of a universe led to the creation of our own?',('No','Yes'))
+if multiverse == "Yes":
+    foundation += 1
 simulation_theory = st.selectbox('Do you believe we are in a simulation and there are potentially many or multiple layers of simulations?',('No','Yes'))
+if simulation_theory == "Yes":
+    foundation += 1
 life_complexity = st.selectbox('Do you acknowledge the incredible improbability of human consciousness emerging?',('Yes','No'))
+if life_complexity == "Yes":
+    foundation += 1
 #questions of value
 human_value_why = st.selectbox("Is a person valuable (and deserving of rights) innately or because the state says so?",('Innate Value','The State'))
 if human_value_why == 'Innate Value':
+    foundation += 1
     human_value_innate_why = st.selectbox("Why does a person have innate value?", ("Because they are unique, conscious beings", "Because they were created","Just because"))
+else:
+    human_value_innate_why = "Not Applicable"
 caring = st.selectbox("Do we have a moral responsibility to uphold the value of fellow humans?", ("Yes", "No"))
+if caring == 'Yes':
+    foundation += 1
 lottery = st.selectbox("How much control did you have over where and when you were born?", ("No control", "I could influence my own birth"))
 
 #policy implications of value
 lottery2 = st.selectbox("Should people's life outcomes be constrained by their place of birth?", ("No", "Yes"))
+if lottery2 == 'No':
+    communitarianism += 1
 action = st.selectbox("Does minimizing chance in life outcomes require some form of action or support from others?", ("Yes", "No"))
 if action == "Yes":
     choice = st.selectbox("How much should helping to improve life outcomes be a personal choice versus a group choice?", ("Personal", "Group"))
     if choice == "Personal":
         personal = st.selectbox("Is it okay to make personal choices that don't improve the life outcomes of others?", ("No", "Yes"))
+        if personal == 'No':
+            communitarianism += 1
+    else:
+        personal = "Not Applicable"
+        group = "Not Applicable"
     if choice == "Group":
-        group = st.selectbox("How does a group best determine how to make decisions?", ("Democracy", "Rule of those in power"))
+        communitarianism += 1
+        group = st.selectbox("How does a group best determine how to make decisions?", ("Democracy", "Rule of those in power or Scripture"))
+        if group == "Rule of those in power or Scripture":
+            communitarianism += 1
+    else:
+        personal = "Not Applicable"
+        group = "Not Applicable"
+else:
+    personal = "Not Applicable"
+    group = "Not Applicable"
 killing = st.selectbox("Is killing a human wrong?", ("Yes", "No"))
 if killing == "Yes":
+    foundation += 1
     killing_why = st.selectbox("What makes killing wrong? What makes death sad or a loss?", ("It eliminates the critically high potential of future life", "It eliminates a life that has experienced conscious thought, memories, relationships, etc", "Both"))
     abortion = st.selectbox("Are you pro-life or pro-choice?", ("Pro-life", "Pro-choice"))
+    if abortion == 'Pro-life':
+        communitarianism += 1
+else:
+    killing_why = "Not Applicable"
+    abortion = "Not Applicable"
 healthcare = st.selectbox("Everyone should have access to the healthcare they need?", ("Yes", "No"))
+if healthcare == 'Yes':
+    communitarianism +=1
 environment = st.selectbox("Should we embrace sustainable policies?", ("Yes", "No"))
+if environment == 'Yes':
+    communitarianism +=1
+
+foundation_list = [foundation, 4, 5]
+communitarianism_list = [communitarianism, 4, 3]
+size = [foundation+communitarianism, 8, 8]
+id_list = ['You', 'Leftist', 'Right-Wing Populist']
+beliefs_table = pd.DataFrame(list(zip(foundation_list, communitarianism_list, id_list, size)), columns=['Ideological Foundation', 'Communitarian Tendencies', 'ID', 'Size'])
+beliefs_table
+c = alt.Chart(beliefs_table).mark_circle().encode(
+     x='Ideological Foundation', y='Communitarian Tendencies', size = 'Size', color = 'ID', tooltip=['Ideological Foundation', 'Communitarian Tendencies', 'ID'])
+
+st.altair_chart(c, use_container_width=True)
+
+questions = ['Does the universe have a beginning?',
+'Do you believe there are multiple universes or the death of a universe led to the creation of our own?',
+'Do you believe we are in a simulation and there are potentially many or multiple layers of simulations?',
+'Do you acknowledge the incredible improbability of human consciousness emerging?',
+"Is a person valuable (and deserving of rights) innately or because the state says so?",
+"Why does a person have innate value?",
+"Do we have a moral responsibility to uphold the value of fellow humans?",
+"How much control did you have over where and when you were born?",
+"Should people's life outcomes be constrained by their place of birth?",
+"Does minimizing chance in life outcomes require some form of action or support from others?",
+"How much should helping to improve life outcomes be a personal choice versus a group choice?",
+"Is it okay to make personal choices that don't improve the life outcomes of others?",
+"How does a group best determine how to make decisions?",
+"Is killing a human wrong?",
+"What makes killing wrong? What makes death sad or a loss?",
+"Everyone should have access to the healthcare they need?",
+"Should we embrace sustainable policies?"
+]
+answers = [universe, multiverse, simulation_theory, life_complexity, human_value_why, human_value_innate_why, caring, lottery, lottery2, action, choice, personal, group, killing, killing_why, abortion, healthcare, environment]
+table = pd.DataFrame(list(zip(questions, answers)), columns = ['Question', 'Answer'])
+
+#download responses
+def convert_df(df):
+     # IMPORTANT: Cache the conversion to prevent computation on every rerun
+     return df.to_csv().encode('utf-8')
+
+csv = convert_df(table)
+
+st.download_button(
+     label="Download your responses as CSV",
+     data=csv,
+     file_name='belief_flow_responses.csv',
+     mime='text/csv',
+ )
 
 #origins and nature of existence
 if universe == 'No':
